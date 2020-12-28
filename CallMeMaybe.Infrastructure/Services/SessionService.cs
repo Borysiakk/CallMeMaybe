@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿
+
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CallMeMaybe.Domain.Entities;
@@ -6,13 +8,13 @@ using CallMeMaybe.Infrastructure.Interface;
 using CallMeMaybe.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace CallMeMaybe.Infrastructure.Repository
+namespace CallMeMaybe.Infrastructure.Services
 {
-    public class SessionRepository :ISessionRepository
+    public class SessionService :ISessionService
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public SessionRepository(ApplicationDbContext dbContext)
+        public SessionService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }

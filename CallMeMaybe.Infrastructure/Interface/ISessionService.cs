@@ -4,7 +4,7 @@ using CallMeMaybe.Domain.Entities;
 
 namespace CallMeMaybe.Infrastructure.Interface
 {
-    public interface ISessionRepository
+    public interface ISessionService
     {
         Task AddAsync(Session session);
         Task<List<string>> GetActiveUserAsync(string userId);

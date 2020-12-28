@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CallMeMaybe.Domain.Contract.Results
+namespace CallMeMaybe.Domain.Contract.Requests
 {
     public class LoginViewModel
     {

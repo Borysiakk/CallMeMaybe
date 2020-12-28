@@ -2,7 +2,7 @@
 
 namespace CallMeMaybe.Domain.Contract.Results
 {
-    public class AuthorizationResult
+    public class AuthenticateResult
     {
         public string Id { get; set; }
         public string Token { get; set; }
