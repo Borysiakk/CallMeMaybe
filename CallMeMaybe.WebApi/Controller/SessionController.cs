@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using CallMeMaybe.Domain.Entities;
 using CallMeMaybe.Infrastructure.Interface;
-using CallMeMaybe.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Net.Mime;
 using System.Threading.Tasks;
-using CallMeMaybe.Domain.Contract.Requests;
-using CallMeMaybe.Domain.Entities;
-using CallMeMaybe.Infrastructure.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using CallMeMaybe.Domain.Contract.Requests;
+using CallMeMaybe.Infrastructure.Interface;
 
 namespace CallMeMaybe.WebApi.Controller
 {

@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.Web", "CallMeMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe", "CallMeMaybe\CallMeMaybe.csproj", "{C6697850-0CCC-40BD-8EFF-8BB3C4BE60EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.Tests", "CallMeMaybe.Tests\CallMeMaybe.Tests.csproj", "{DA01777D-1986-408F-B6E2-E767FB7FA46E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{C6697850-0CCC-40BD-8EFF-8BB3C4BE60EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6697850-0CCC-40BD-8EFF-8BB3C4BE60EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6697850-0CCC-40BD-8EFF-8BB3C4BE60EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA01777D-1986-408F-B6E2-E767FB7FA46E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA01777D-1986-408F-B6E2-E767FB7FA46E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA01777D-1986-408F-B6E2-E767FB7FA46E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA01777D-1986-408F-B6E2-E767FB7FA46E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

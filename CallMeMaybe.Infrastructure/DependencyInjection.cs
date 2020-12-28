@@ -3,7 +3,6 @@ using System.Text;
 using System.Threading.Tasks;
 using CallMeMaybe.Domain.Entities;
 using CallMeMaybe.Infrastructure.Interface;
-using CallMeMaybe.Infrastructure.Repository;
 using CallMeMaybe.Infrastructure.Services;
 using CallMeMaybe.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,7 +22,7 @@ namespace CallMeMaybe.Infrastructure
             
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddSingleton<ITokenService, JwtTokenService>();
-            services.AddScoped<IFriendRepository, FriendRepository>();
+            services.AddScoped<IFriendService, FriendService>();
             services.AddScoped<ISessionService, SessionService>();
             
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));

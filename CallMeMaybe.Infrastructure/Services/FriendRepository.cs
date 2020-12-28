@@ -5,13 +5,13 @@ using CallMeMaybe.Infrastructure.Interface;
 using CallMeMaybe.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace CallMeMaybe.Infrastructure.Repository
+namespace CallMeMaybe.Infrastructure.Services
 {
-    public class FriendRepository :IFriendRepository
+    public class FriendService :IFriendService
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public FriendRepository(ApplicationDbContext dbContext)
+        public FriendService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,7 +23,11 @@ namespace CallMeMaybe.Infrastructure.Repository
 
         public async Task<List<string>> GetActiveFriends(string userId)
         {
-            return await (from friend in _dbContext.Friends join user in _dbContext.Users on friend.FriendId equals user.Id select user.UserName).Distinct().ToListAsync();
+
+            return await (from session in _dbContext.Sessions where session.Status == true where session.UserId != userId
+                         join friends in _dbContext.Friends on session.UserId equals friends.FriendId
+                         join user in _dbContext.Users on session.UserId equals user.Id
+                         select user.UserName).Distinct().ToListAsync();
         }
     }
 }

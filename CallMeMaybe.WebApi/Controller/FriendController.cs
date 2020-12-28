@@ -10,9 +10,9 @@ namespace CallMeMaybe.WebApi.Controller
     [Route("api/[controller]")]
     public class FriendController :ControllerBase
     {
-        private readonly IFriendRepository _friendRepository;
+        private readonly IFriendService _friendRepository;
         
-        public FriendController(IFriendRepository friendRepository)
+        public FriendController(IFriendService friendRepository)
         {
             _friendRepository = friendRepository;
         }
@@ -23,6 +23,19 @@ namespace CallMeMaybe.WebApi.Controller
             try
             {
                 return Ok(await _friendRepository.GetFriendsAsync(userId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,e.Message);
+            }
+        }
+
+        [HttpGet("GetActiveFriends/{userId}")]
+        public async Task<IActionResult> GetActiveFriends(string userId)
+        {
+            try
+            {
+                return Ok(await _friendRepository.GetActiveFriends(userId));
             }
             catch (Exception e)
             {
