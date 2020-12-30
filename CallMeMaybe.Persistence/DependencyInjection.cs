@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +11,14 @@ namespace CallMeMaybe.Persistence
         
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 1;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            });
+            
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(DbConnection));
             return services;
         }

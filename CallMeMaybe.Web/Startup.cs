@@ -1,6 +1,8 @@
 
 using CallMeMaybe.Infrastructure;
 using CallMeMaybe.Persistence;
+using CallMeMaybe.SignalR;
+using CallMeMaybe.SignalR.Hubs;
 using CallMeMaybe.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +27,7 @@ namespace CallMeMaybe.Web
             services.AddWebApi();
             services.AddPersistence();
             services.AddInfrastructure(configuration);
+            services.AddSignalCore();
             services.AddControllersWithViews();
         }
 
@@ -47,9 +50,10 @@ namespace CallMeMaybe.Web
             app.UseStaticFiles();
         
             app.UseRouting();
-
+            app.UseSignalR();
             app.UseAuthorization();
-
+            app.UseAuthentication();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

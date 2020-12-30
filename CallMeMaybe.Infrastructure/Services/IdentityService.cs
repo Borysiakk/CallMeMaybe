@@ -36,6 +36,7 @@ namespace CallMeMaybe.Infrastructure.Services
                 return new AuthenticateResult()
                 {
                     Id = user.Id,
+                    User = model.Email,
                     Success = true,
                     Token = _tokenService.Generate(user),
                 };

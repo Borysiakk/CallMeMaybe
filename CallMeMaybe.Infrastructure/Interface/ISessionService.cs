@@ -7,7 +7,9 @@ namespace CallMeMaybe.Infrastructure.Interface
     public interface ISessionService
     {
         Task AddAsync(Session session);
-        Task<List<string>> GetActiveUserAsync(string userId);
-        Task<List<string>> GetConnectionsIdByUser(string userId);
+        Task<string> GetUserIdByConnectionId(string connectionId);
+        Task<string> GetUserNameByConnectionId(string connectionId);
+        Task<string> GetConnectionIdByUserName(string userName);
+        Task UpdateStatusAsync(string connectionId, bool status);
     }
 }

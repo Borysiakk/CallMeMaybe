@@ -25,14 +25,33 @@ namespace CallMeMaybe.Infrastructure.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<string>> GetActiveUserAsync(string userId)
+        public Task<string> GetUserIdByConnectionId(string connectionId)
         {
-            return await _dbContext.Sessions.Where(a => a.Status == true).Where(b => b.UserId == userId).Select(c => c.UserId).ToListAsync();
+           return _dbContext.Sessions.Where(a => a.Status == true).Where(b => b.ConnectionId == connectionId).Select(c => c.UserId).FirstOrDefaultAsync();
         }
 
-        public async Task<List<string>> GetConnectionsIdByUser(string userId)
+        public async Task<string> GetUserNameByConnectionId(string connectionId)
         {
-            return await _dbContext.Sessions.Where(a => a.UserId == userId).Where(b => b.Status == true).Select(c => c.ConnectionId).ToListAsync();
+            var id = await GetUserIdByConnectionId(connectionId);
+            return await _dbContext.Users.Where(a => a.Id == id).Select(b => b.UserName).FirstOrDefaultAsync();
+        }
+
+        public async Task<string> GetConnectionIdByUserName(string userName)
+        {
+            var r =   await (from user in _dbContext.Users
+                    where user.UserName == userName
+                    join session in _dbContext.Sessions on user.Id equals session.UserId
+                    select session).Where(a=>a.Status == true).Select(b=>b.ConnectionId).FirstOrDefaultAsync();
+            return r;
+        }
+
+        public async Task UpdateStatusAsync(string connectionId, bool status)
+        {
+            var session = await _dbContext.Sessions.Where(a => a.Status == true).SingleOrDefaultAsync(b => b.ConnectionId == connectionId);
+            session.Status = status;
+            _dbContext.Sessions.Update(session);
+            
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

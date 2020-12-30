@@ -1,20 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.WebApi", "CallMeMaybe.WebApi\CallMeMaybe.WebApi.csproj", "{AD3A4469-7168-44A7-A773-294FB3D902C9}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe.WebApi", "CallMeMaybe.WebApi\CallMeMaybe.WebApi.csproj", "{AD3A4469-7168-44A7-A773-294FB3D902C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.SignalR", "CallMeMaybe.SignalR\CallMeMaybe.SignalR.csproj", "{52913DB5-8FCF-4862-99B8-B5DCCED1709E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe.SignalR", "CallMeMaybe.SignalR\CallMeMaybe.SignalR.csproj", "{52913DB5-8FCF-4862-99B8-B5DCCED1709E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.Persistence", "CallMeMaybe.Persistence\CallMeMaybe.Persistence.csproj", "{85D00DBC-56BC-48C5-9AD8-A7143ABC4E12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe.Persistence", "CallMeMaybe.Persistence\CallMeMaybe.Persistence.csproj", "{85D00DBC-56BC-48C5-9AD8-A7143ABC4E12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.Domain", "CallMeMaybe.Domain\CallMeMaybe.Domain.csproj", "{AD43457E-CD40-4BE6-9161-F405682EA6F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe.Domain", "CallMeMaybe.Domain\CallMeMaybe.Domain.csproj", "{AD43457E-CD40-4BE6-9161-F405682EA6F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.Infrastructure", "CallMeMaybe.Infrastructure\CallMeMaybe.Infrastructure.csproj", "{5939415F-29AE-487D-B3A1-6C8433606D42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe.Infrastructure", "CallMeMaybe.Infrastructure\CallMeMaybe.Infrastructure.csproj", "{5939415F-29AE-487D-B3A1-6C8433606D42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.Web", "CallMeMaybe.Web\CallMeMaybe.Web.csproj", "{E6EB435A-1A32-4886-961C-85E1E93BDF56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe.Web", "CallMeMaybe.Web\CallMeMaybe.Web.csproj", "{E6EB435A-1A32-4886-961C-85E1E93BDF56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe", "CallMeMaybe\CallMeMaybe.csproj", "{C6697850-0CCC-40BD-8EFF-8BB3C4BE60EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe", "CallMeMaybe\CallMeMaybe.csproj", "{C6697850-0CCC-40BD-8EFF-8BB3C4BE60EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.Tests", "CallMeMaybe.Tests\CallMeMaybe.Tests.csproj", "{DA01777D-1986-408F-B6E2-E767FB7FA46E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CallMeMaybe.Tests", "CallMeMaybe.Tests\CallMeMaybe.Tests.csproj", "{DA01777D-1986-408F-B6E2-E767FB7FA46E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CallMeMaybe.UI", "CallMeMaybe.UI\CallMeMaybe.UI.csproj", "{61A21A19-1756-4FF6-AAE7-44AC29D9C941}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,7 +59,15 @@ Global
 		{DA01777D-1986-408F-B6E2-E767FB7FA46E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA01777D-1986-408F-B6E2-E767FB7FA46E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA01777D-1986-408F-B6E2-E767FB7FA46E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A21A19-1756-4FF6-AAE7-44AC29D9C941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A21A19-1756-4FF6-AAE7-44AC29D9C941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A21A19-1756-4FF6-AAE7-44AC29D9C941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A21A19-1756-4FF6-AAE7-44AC29D9C941}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {785B88E8-A722-4CCA-8371-3E62F01EB2CE}
 	EndGlobalSection
 EndGlobal

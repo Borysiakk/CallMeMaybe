@@ -35,12 +35,26 @@ namespace CallMeMaybe.WebApi.Controller
         {
             try
             {
-                return Ok(await _friendRepository.GetActiveFriends(userId));
+                return Ok(await _friendRepository.GetActiveFriendsAsync(userId));
             }
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,e.Message);
             }
         }
+        
+        [HttpGet("GetFriendsStatus/{userId}")]
+        public async Task<IActionResult> GetFriendsStatus(string userId)
+        {
+            try
+            {
+                return Ok(await _friendRepository.GetFriendsStatusAsync(userId));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,e.Message);
+            }
+        }
+        
     }
 }
