@@ -85,14 +85,14 @@ namespace CallMeMaybe.SignalR.Hubs
         }
     }
 
-    public interface IClient :IClientPhone
+    public interface IClient :IClientMultimedia
     {
         Task BroadcastMessage(string username,string msg);
         Task FriendStatusNotification(string username,bool state);
 
     }
 
-    public interface IClientPhone
+    public interface IClientMultimedia
     {
         Task CallAccepted(string userName);
         Task CallDeclined(string userName);
