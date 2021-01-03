@@ -12,9 +12,10 @@ namespace CallMeMaybe.UI
     public partial class MainForm : Form
     {
 
+
+        private string userName;
         private Connection _connection;
-
-
+        
         private Image _imageCloseTabPage;
         private ImageList _imageStatusList;
         private List<string> _imageNameList;
@@ -45,72 +46,11 @@ namespace CallMeMaybe.UI
             }
             listViewFriends.SmallImageList = _imageStatusList;
 
-            ConnectionBuilderConfiguration builderConfiguration = new ConnectionBuilderConfiguration
-            {
-                UpdateFriendsStatusDelegate = args =>
-                {
-                    if (args.Status == true)
-                    {
-                        listViewFriends.Items[args.UserName].ImageIndex = 1;
-                        if (TabControlChat.Controls.Count != 0)
-                        {
-                            if (TabControlChat.SelectedTab == TabControlChat.TabPages[args.UserName])
-                            {
-                                sendMessageButton.Enabled = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        listViewFriends.Items[args.UserName].ImageIndex = 0;
-                        if (TabControlChat.Controls.Count != 0)
-                        {
-                            if (TabControlChat.SelectedTab == TabControlChat.TabPages[args.UserName])
-                            {
-                                sendMessageButton.Enabled = false;
-                            }
-                        }
-                    }
-                    
-                },
-                ReceiveMessageDelegate = args =>
-                {
-                    if (TabControlChat.TabPages[args.UserName] == null)
-                    {
-                        TabPage page = new TabPage(args.UserName) {Name = args.UserName};
-                        RichTextBox richTextBox = new RichTextBox
-                        {
-                            Text = args.UserName + @": " + args.Message, Dock = DockStyle.Fill, ReadOnly = true
-                        };
-                        page.Controls.Add(richTextBox);
-                        TabControlChat.Controls.Add(page);
-                    }
-                    else
-                    {
-                        var page = TabControlChat.TabPages[args.UserName];
-                        RichTextBox richTextBox = page.Controls[0] as RichTextBox;
-                        richTextBox.AppendText("\r\n");
-                        richTextBox.AppendText(args.UserName + @": " + args.Message);
-                    }
-                },
-                SendMessageDelegate = args =>
-                {
-                    TabPage page = TabControlChat.TabPages[args.UserName];
-                    RichTextBox richTextBox = page.Controls[0] as RichTextBox;
-                    richTextBox.AppendText("\r\n");
-                    richTextBox?.AppendText(_connection.AuthorizationManager.AuthenticateResult.User + ":" + args.Message);
-                }
-                
-            };
-
-
-
             LoginForm loginForm = new LoginForm();
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
-                builderConfiguration.AuthorizationManager = loginForm.AuthorizationManager;
-                _connection = await ConnectionBuilder.Create(builderConfiguration);
-
+                _connection = await ConnectionBuilder.Create(loginForm.AuthorizationManager);
+                
                 foreach(var friend in _connection.Friends)
                 {
                     if (friend.Value == true)
@@ -119,6 +59,72 @@ namespace CallMeMaybe.UI
                         listViewFriends.Items.Add(friend.Key, friend.Key, 0);
                 }
             }
+
+            _connection.UpdateFriendsStatus += (o, args) =>
+            {
+                if (args.Status == true)
+                {
+                    listViewFriends.Items[args.UserName].ImageIndex = 1;
+                    if (TabControlChat.Controls.Count != 0)
+                    {
+                        if (TabControlChat.SelectedTab == TabControlChat.TabPages[args.UserName])
+                        {
+                            sendMessageButton.Enabled = true;
+                        }
+                    }
+                }
+                else
+                {
+                    listViewFriends.Items[args.UserName].ImageIndex = 0;
+                    if (TabControlChat.Controls.Count != 0)
+                    {
+                        if (TabControlChat.SelectedTab == TabControlChat.TabPages[args.UserName])
+                        {
+                            sendMessageButton.Enabled = false;
+                        }
+                    }
+                }
+            };
+
+            _connection.SendMessage += (o, args) =>
+            {
+                TabPage page = TabControlChat.TabPages[args.UserName];
+                RichTextBox richTextBox = page.Controls[0] as RichTextBox;
+                richTextBox?.AppendText("\r\n");
+                richTextBox?.AppendText("Ja :" + args.Message);
+            };
+
+            _connection.ReceiveMessage += (o, args) =>
+            {
+                if (TabControlChat.TabPages[args.UserName] == null)
+                {
+                    TabPage page = new TabPage(args.UserName) {Name = args.UserName};
+                    RichTextBox richTextBox = new RichTextBox
+                    {
+                        Text = args.UserName + @": " + args.Message, Dock = DockStyle.Fill, ReadOnly = true
+                    };
+                    page.Controls.Add(richTextBox);
+                    TabControlChat.Controls.Add(page);
+                }
+                else
+                {
+                    var page = TabControlChat.TabPages[args.UserName];
+                    RichTextBox richTextBox = page.Controls[0] as RichTextBox;
+                    richTextBox?.AppendText("\r\n");
+                    richTextBox?.AppendText(args.UserName + @": " + args.Message);
+                }
+            };
+
+            _connection.IncomingCall += (o, args) =>
+            {
+                buttonCall.Visible = false;
+                buttonCancel.Visible = false;
+
+                buttonCallDeclined.Visible = true;
+                buttonCallAccepted.Visible = true;
+
+                userName = args.UserName;
+            };
         }
 
         private async void sendMessageButton_Click(object sender, EventArgs e)
@@ -174,6 +180,27 @@ namespace CallMeMaybe.UI
                     sendMessageButton.Enabled = false;
                 }
             }
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonCall_Click(object sender, EventArgs e)
+        {
+            var itemFriendSelect = listViewFriends.SelectedItems[0];
+            _connection.Call(itemFriendSelect.Text);
+        }
+
+        private async void buttonCallAccepted_Click(object sender, EventArgs e)
+        {
+            await _connection.AnswerCall(userName, true);
+        }
+
+        private async void buttonCallDeclined_Click(object sender, EventArgs e)
+        {
+            await _connection.AnswerCall(userName, false);
         }
 
         private void TabControlChat_DrawItem(object sender, DrawItemEventArgs e)

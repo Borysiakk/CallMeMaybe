@@ -13,9 +13,8 @@ namespace CallMeMaybe.Builder
 {
     public static class ConnectionBuilder
     {
-        public static async Task<Connection> Create(ConnectionBuilderConfiguration builderConfiguration)
+        public static async Task<Connection> Create(AuthorizationManager authorizationManager)
         {
-            var authorizationManager = builderConfiguration.AuthorizationManager;
             string id = authorizationManager.AuthenticateResult.Id;
             string userName = authorizationManager.AuthenticateResult.User;
 
@@ -26,19 +25,14 @@ namespace CallMeMaybe.Builder
                 options.Headers.Add("UserName", userName);
             }).AddMessagePackProtocol().Build();
 
-            Connection connection = new Connection(new ConnectionConfiguration
+            Connection connection = new Connection()
             {
-                HubConnection = hub,
-            });
-
-            connection.SendMessage += builderConfiguration.SendMessageDelegate;
-            connection.ReceiveMessage += builderConfiguration.ReceiveMessageDelegate;
-            connection.UpdateFriendsStatus += builderConfiguration.UpdateFriendsStatusDelegate;
-
-
+                HubConnection = hub
+            };
+            
             connection.Friends = await HttpRestClient.GetFriendsStatus(id);
 
-            hub.On("NotificationFriendStatus", (string userName, bool state) =>
+            hub.On("FriendStatusNotification", (string userName, bool state) =>
             {
                 try
                 {
@@ -61,29 +55,47 @@ namespace CallMeMaybe.Builder
 
             hub.On("BroadcastMessage", (string username,string message) =>
             {
-                
-                try
+                var args = new MessageDelegateArgs()
                 {
-                    var args = new MessageDelegateArgs()
-                    {
-                        UserName = username,
-                        Message = message,
-                    };
-                
-                    connection.OnReceiveMessage(args);
-                }
-                catch (Exception e)
+                    UserName = username,
+                    Message = message,
+                };
+            
+                connection.OnReceiveMessage(args);
+            });
+            
+            hub.On("IncomingCall", (string userName )=>
+            {
+                var args = new CommunicatorDelegateArgs()
                 {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                    UserName = userName,
+                };
+                
+                connection.OnIncomingCall(args);
             });
 
+            hub.On("CallAccepted", (string userName) =>
+            {
+                CommunicatorDelegateArgs args = new CommunicatorDelegateArgs()
+                {
+                    UserName = userName,
+                };
+                connection.OnCallAccepted(args);
+            });
+            
+            hub.On("CallDeclined", (string userName) =>
+            {
+                CommunicatorDelegateArgs args = new CommunicatorDelegateArgs()
+                {
+                    UserName = userName,
+                };
+                
+                connection.OnCallDeclined(args);
+            });
 
             await hub.StartAsync();
 
             connection.HubConnection = hub;
-            connection.AuthorizationManager = authorizationManager;
             return connection;
         }
     }

@@ -22,6 +22,7 @@ namespace CallMeMaybe.SignalR.Hubs
 
         public override async Task OnConnectedAsync()
         {
+            Console.WriteLine("OK");
             var id = Context.GetHttpContext().Request.Headers["Id"];
             var userName = Context.GetHttpContext().Request.Headers["UserName"];
 
@@ -34,7 +35,7 @@ namespace CallMeMaybe.SignalR.Hubs
 
             var activeFriends = await _friendService.GetConnectionIdActiveFriendsAsync(id);
             if (activeFriends != null) 
-                await Clients.Clients(activeFriends).NotificationFriendStatus(userName,true);
+                await Clients.Clients(activeFriends).FriendStatusNotification(userName,true);
 
             await _sessionService.AddAsync(session);
             await base.OnConnectedAsync();
@@ -46,23 +47,55 @@ namespace CallMeMaybe.SignalR.Hubs
             var userName  = await _sessionService.GetUserNameByConnectionId(Context.ConnectionId);
             
             var activeFriends = await _friendService.GetConnectionIdActiveFriendsAsync(id);
-            await Clients.Clients(activeFriends).NotificationFriendStatus(userName,false);
+            await Clients.Clients(activeFriends).FriendStatusNotification(userName,false);
             await _sessionService.UpdateStatusAsync(Context.ConnectionId,false);
             await base.OnDisconnectedAsync(exception);
         }
 
         public async Task SendMessage(string userName,string mgs)
         {
-            Console.WriteLine(mgs);
             string connectionId = await _sessionService.GetConnectionIdByUserName(userName);
             string userNameCurrent = await _sessionService.GetUserNameByConnectionId(Context.ConnectionId);
             await Clients.Client(connectionId).BroadcastMessage(userNameCurrent,mgs);
         }
+
+        public async Task CallUser(string userName)
+        {
+            Console.WriteLine("CallUser : " + userName);
+            string connectionId = await _sessionService.GetConnectionIdByUserName(userName);
+            string userNameCurrent = await _sessionService.GetUserNameByConnectionId(Context.ConnectionId);
+
+            await Clients.Client(connectionId).IncomingCall(userNameCurrent);
+        }
+
+        public async Task AnswerCall(string userName,bool acceptCall)
+        {
+            Console.WriteLine(acceptCall);
+            string connectionId = await _sessionService.GetConnectionIdByUserName(userName);
+            string userNameCurrent = await _sessionService.GetUserNameByConnectionId(Context.ConnectionId);
+            
+            if (acceptCall)
+            {
+                await Clients.Client(connectionId).CallAccepted(userNameCurrent);
+            }
+            else
+            {
+                await Clients.Client(connectionId).CallDeclined(userNameCurrent);
+            }
+        }
     }
 
-    public interface IClient
+    public interface IClient :IClientPhone
     {
         Task BroadcastMessage(string username,string msg);
-        Task NotificationFriendStatus(string username,bool state);
+        Task FriendStatusNotification(string username,bool state);
+
+    }
+
+    public interface IClientPhone
+    {
+        Task CallAccepted(string userName);
+        Task CallDeclined(string userName);
+        Task IncomingCall(string userName);
     }
 }
