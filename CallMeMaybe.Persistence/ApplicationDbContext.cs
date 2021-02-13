@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CallMeMaybe.Persistence
 {
-    public class ApplicationDbContext :IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext :IdentityDbContext
     {
         
-        public DbSet<Friend> Friends { get; set; }
-        public DbSet<Session> Sessions { get; set; }
+        public DbSet<Friends> Friends { get; set; }
+        public DbSet<SessionUser> SessionUsers { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             
@@ -26,8 +26,7 @@ namespace CallMeMaybe.Persistence
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-            var builder = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=aspnet-53bc9b9d-9d6a-45d4-8429-2a2761773502;Trusted_Connection=True;MultipleActiveResultSets=true");
+            var builder = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(DependencyInjection.DbConnection);
             return new ApplicationDbContext(builder.Options);
         }
     }

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>CallMeMaybe</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CallMeMaybe.Domain\CallMeMaybe.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.3" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="5.0.3" />
+      <PackageReference Include="RestSharp" Version="106.11.7" />
+      <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.11.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.MixedReality.WebRTC, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\..\..\..\mr-webrtc\bin\netstandard2.0\Debug\Microsoft.MixedReality.WebRTC.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

@@ -49,7 +49,7 @@ namespace CallMeMaybe.UI
             LoginForm loginForm = new LoginForm();
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
-                _connection = await ConnectionBuilder.Create(loginForm.AuthorizationManager);
+                _connection = await ConnectionBuilder.Create(loginForm.AuthorizationResult);
                 
                 foreach(var friend in _connection.Friends)
                 {
@@ -60,7 +60,7 @@ namespace CallMeMaybe.UI
                 }
             }
 
-            _connection.UpdateFriendsStatus += (o, args) =>
+            _connection.ChangeStatusFriend += (o, args) =>
             {
                 if (args.Status == true)
                 {
@@ -123,7 +123,7 @@ namespace CallMeMaybe.UI
                 buttonCallDeclined.Visible = true;
                 buttonCallAccepted.Visible = true;
 
-                userName = args.UserName;
+                userName = args.User;
             };
         }
 
@@ -195,12 +195,12 @@ namespace CallMeMaybe.UI
 
         private async void buttonCallAccepted_Click(object sender, EventArgs e)
         {
-            await _connection.AnswerCall(userName, true);
+            //await _connection.AnswerCall(userName, true);
         }
 
         private async void buttonCallDeclined_Click(object sender, EventArgs e)
         {
-            await _connection.AnswerCall(userName, false);
+            //await _connection.AnswerCall(userName, false);
         }
 
         private void TabControlChat_DrawItem(object sender, DrawItemEventArgs e)

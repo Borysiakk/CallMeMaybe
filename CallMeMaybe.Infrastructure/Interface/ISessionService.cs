@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CallMeMaybe.Domain.Entities;
 
 namespace CallMeMaybe.Infrastructure.Interface
 {
     public interface ISessionService
     {
-        Task AddAsync(Session session);
-        Task<string> GetUserIdByConnectionId(string connectionId);
-        Task<string> GetUserNameByConnectionId(string connectionId);
-        Task<string> GetConnectionIdByUserName(string userName);
-        Task UpdateStatusAsync(string connectionId, bool status);
+        public Task AddAsync(SessionUser session);
+        public void CloseSessionUser(string userName);
+        public string GetConnectionIdByUserId(string userId);
+        public string GetConnectionIdByUserName(string userName);
+        public string GetUserNameByConnectionId(string connectionId);
+        public string GetUserIdByConnectionId(string connectedId);
+        
     }
 }

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CallMeMaybe.Infrastructure\CallMeMaybe.Infrastructure.csproj" />
+      <ProjectReference Include="..\CallMeMaybe.Persistence\CallMeMaybe.Persistence.csproj" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.3" />
+      <ProjectReference Include="..\CallMeMaybe.SignalR\CallMeMaybe.SignalR.csproj" />
+    </ItemGroup>
+
+</Project>

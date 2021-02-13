@@ -2,11 +2,8 @@
 
 namespace CallMeMaybe.Interface
 {
-    public interface IConnection :IConnectionTextCommunication,IConnectionMultimediaCommunication
+    public interface IConnection :IConnectionTextCommunication,IConnectMultimediaCommunication
     {
-        void OnUpdateFriendsStatus(UpdateFriendsStatusDelegateArgs args);
-        event UpdateFriendsStatusDelegate UpdateFriendsStatus;
+        public delegate void ChangeStatusFriendDelegate(object sender, ChangeStatusFriendDelegateArgs args);
     }
-
-    public delegate void UpdateFriendsStatusDelegate(object sender, UpdateFriendsStatusDelegateArgs args);
 }

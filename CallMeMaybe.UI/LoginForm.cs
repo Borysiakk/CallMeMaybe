@@ -1,7 +1,9 @@
 ﻿
+using System.Net;
 using System.Windows.Forms;
 using CallMeMaybe;
 using CallMeMaybe.Domain.Contract.Requests;
+using CallMeMaybe.Domain.Contract.Result;
 
 
 namespace CallMeMaybe.UI
@@ -9,7 +11,7 @@ namespace CallMeMaybe.UI
     public partial class LoginForm : Form
     {
 
-        public AuthorizationManager AuthorizationManager { get; set; }
+        public HttpAuthorizationResult AuthorizationResult { get; set; }
         public LoginForm()
         {
             InitializeComponent();
@@ -17,15 +19,14 @@ namespace CallMeMaybe.UI
 
         private async void LoginButton_Click(object sender, System.EventArgs e)
         {
-            LoginViewModel login = new LoginViewModel()
+            LoginModelView login = new LoginModelView()
             {
                 Email = LogincomboBox.Text,
                 Password = PasswordcomboBox.Text,
             };
-            AuthorizationManager = new AuthorizationManager(login);
-            await AuthorizationManager.RefreshToken();
 
-            if (AuthorizationManager.AuthenticateResult.Success == true)
+            AuthorizationResult = await HttpRestClient.LoginAsync(login);
+            if (AuthorizationResult.Code == HttpStatusCode.OK)
             {
                 this.DialogResult = DialogResult.OK;
                 this.Close();

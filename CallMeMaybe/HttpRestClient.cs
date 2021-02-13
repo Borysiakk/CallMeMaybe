@@ -1,33 +1,22 @@
-﻿
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CallMeMaybe.Domain.Contract.Requests;
-using CallMeMaybe.Domain.Contract.Results;
-using CallMeMaybe.RestApi;
-
+using CallMeMaybe.Domain.Contract.Result;
+using CallMeMaybe.Http;
 
 namespace CallMeMaybe
 {
-    public static class HttpRestClient
+    public class HttpRestClient
     {
-        public static async Task<AuthenticateResult> LoginAsync(LoginViewModel model)
+        public static async Task<HttpAuthorizationResult> LoginAsync(LoginModelView model)
         {
-            return await HttpHelper.Post<AuthenticateResult, LoginViewModel>(Routes.Account.Login,model);
+            return await HttpHelper.Post<HttpAuthorizationResult, LoginModelView>(Routes.Identity.Login,model);
         }
 
-        public static async Task<List<string>> GetFriends(string userId)
+        public static async Task<Dictionary<string, bool>> GetFriendsWithStatus(string userId)
         {
-            return await HttpHelper.GetStringAsync<List<string>>(Routes.Friends.GetFriends,"userId", userId);
-        }
-
-        public static async Task<List<string>> GetActiveFriends(string userId)
-        {
-            return await HttpHelper.GetStringAsync<List<string>>(Routes.Friends.GetActiveFriends,"userId", userId);
-        }
-
-        public static async Task<Dictionary<string, bool>> GetFriendsStatus(string userId)
-        {
-            return await HttpHelper.GetStringAsync<Dictionary<string, bool>>(Routes.Friends.GetActiveStatus,"userId", userId);
+            return await HttpHelper.GetStringAsync<Dictionary<string, bool>>(Routes.Friends.GetFriendsWithStatus, "userId", userId);
         }
     }
 }

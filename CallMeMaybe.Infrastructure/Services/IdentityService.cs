@@ -1,10 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net;
+using BC = BCrypt.Net.BCrypt;
 using System.Threading.Tasks;
 using CallMeMaybe.Domain.Contract.Requests;
-using CallMeMaybe.Domain.Contract.Results;
+using CallMeMaybe.Domain.Contract.Result;
 using CallMeMaybe.Domain.Entities;
 using CallMeMaybe.Infrastructure.Interface;
+using CallMeMaybe.Persistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CallMeMaybe.Infrastructure.Services
 {
@@ -14,63 +19,73 @@ namespace CallMeMaybe.Infrastructure.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public IdentityService(ITokenService tokenService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public IdentityService(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
         }
 
-
-        public async Task LogoutAsync()
+        public async Task<HttpAuthorizationResult> LoginAsync(LoginModelView loginModelView)
         {
-            await _signInManager.SignOutAsync();
-        }
-
-        public async Task<AuthenticateResult> LoginAsync(LoginViewModel model)
-        {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-            if (result.Succeeded)
+            var result = await _signInManager.PasswordSignInAsync(loginModelView.Email, loginModelView.Password, loginModelView.RememberMe,false);
+            if (!result.Succeeded)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                return new AuthenticateResult()
+                return new HttpAuthorizationResult()
                 {
-                    Id = user.Id,
-                    User = model.Email,
-                    Success = true,
-                    Token = _tokenService.Generate(user),
+                    Code = HttpStatusCode.Unauthorized,
+                    Errors = new[] {"Login lub hasło są nie poprawne"},
                 };
             }
-            
-            return new AuthenticateResult()
+
+            var user = await _userManager.FindByEmailAsync(loginModelView.Email);
+            return new HttpAuthorizationResult()
             {
-                Success = false,
-                Errors = new string[] {"Błędny login lub hasło"}
+                Id = user.Id,
+                User = user.Email,
+                DateIssue = DateTime.Now,
+                Code = HttpStatusCode.OK,
+                Token = _tokenService.Generate(user),
             };
-            
         }
 
-        public async Task<AuthenticateResult> RegisterAsync(RegisterViewModel model)
+        public async Task<HttpAuthorizationResult> RegisterAsync(RegisterViewModel registerViewModel)
         {
-            var user = new ApplicationUser() {Email = model.Email, UserName = model.Email};
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
+            var user = new ApplicationUser() 
             {
-                await _signInManager.SignInAsync(user, false);
-                return new AuthenticateResult()
+                Id = Guid.NewGuid().ToString(),
+                Email = registerViewModel.Email,
+                UserName = registerViewModel.Email
+            };
+            
+            var isUserExist = await _userManager.FindByEmailAsync(registerViewModel.Email);
+            if (isUserExist != null)
+            {
+                return new HttpAuthorizationResult()
                 {
-                    Id = user.Id,
-                    Success = true,
-                    Token = _tokenService.Generate(user),
+                    Code = HttpStatusCode.Conflict,
+                    Errors = new[] {"Znaleziono użytkownika o podanym mailu"},
                 };
             }
-            
-            return new AuthenticateResult()
+
+            var result = await _userManager.CreateAsync(user, registerViewModel.Password);
+            if (!result.Succeeded)
             {
-                Success = false,
-                Errors = result.Errors.Select(a => a.Description).ToArray(),
+                return new HttpAuthorizationResult()
+                {
+                    Code = HttpStatusCode.BadRequest,
+                    Errors = result.Errors.Select(a => a.Description).ToList(),
+                };
+            }
+            return new HttpAuthorizationResult()
+            {
+                Id = user.Id,
+                User = user.Email,
+                Code = HttpStatusCode.OK,
+                DateIssue = DateTime.Now,
+                Token = _tokenService.Generate(user),
             };
+
         }
     }
 }

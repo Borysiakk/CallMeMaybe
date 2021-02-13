@@ -1,12 +1,8 @@
-﻿
-
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using CallMeMaybe.Domain.Entities;
 using CallMeMaybe.Infrastructure.Interface;
 using CallMeMaybe.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace CallMeMaybe.Infrastructure.Services
 {
@@ -19,39 +15,41 @@ namespace CallMeMaybe.Infrastructure.Services
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Session session)
+        public async Task AddAsync(SessionUser session)
         {
-            await _dbContext.Sessions.AddAsync(session);
+            await _dbContext.SessionUsers.AddAsync(session);
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task<string> GetUserIdByConnectionId(string connectionId)
+        public void CloseSessionUser(string userName)
         {
-           return _dbContext.Sessions.Where(a => a.Status == true).Where(b => b.ConnectionId == connectionId).Select(c => c.UserId).FirstOrDefaultAsync();
+            var session = _dbContext.SessionUsers.Where(a => a.StatusConnection == true).FirstOrDefault(b => b.UserName == userName);
+            if (session != null)
+            {
+                session.StatusConnection = false;
+                _dbContext.SessionUsers.Update(session);
+            }
+            _dbContext.SaveChanges();
         }
 
-        public async Task<string> GetUserNameByConnectionId(string connectionId)
+        public string GetConnectionIdByUserId(string userId)
         {
-            var id = await GetUserIdByConnectionId(connectionId);
-            return await _dbContext.Users.Where(a => a.Id == id).Select(b => b.UserName).FirstOrDefaultAsync();
+            return _dbContext.SessionUsers.Where(a => a.StatusConnection == true).FirstOrDefault(b => b.UserId == userId)?.ConnectionId;
         }
 
-        public async Task<string> GetConnectionIdByUserName(string userName)
+        public string GetConnectionIdByUserName(string userName)
         {
-            var r =   await (from user in _dbContext.Users
-                    where user.UserName == userName
-                    join session in _dbContext.Sessions on user.Id equals session.UserId
-                    select session).Where(a=>a.Status == true).Select(b=>b.ConnectionId).FirstOrDefaultAsync();
-            return r;
+            return _dbContext.SessionUsers.Where(a => a.StatusConnection == true).FirstOrDefault(b => b.UserName == userName)?.ConnectionId;
         }
 
-        public async Task UpdateStatusAsync(string connectionId, bool status)
+        public string GetUserNameByConnectionId(string connectionId)
         {
-            var session = await _dbContext.Sessions.Where(a => a.Status == true).SingleOrDefaultAsync(b => b.ConnectionId == connectionId);
-            session.Status = status;
-            _dbContext.Sessions.Update(session);
-            
-            await _dbContext.SaveChangesAsync();
+            return _dbContext.SessionUsers.Where(a => a.StatusConnection == true).FirstOrDefault(b => b.ConnectionId == connectionId)?.UserName;
+        }
+
+        public string GetUserIdByConnectionId(string connectedId)
+        {
+           return _dbContext.SessionUsers.Where(a => a.StatusConnection == true).FirstOrDefault(b => b.ConnectionId == connectedId)?.UserId;
         }
     }
 }

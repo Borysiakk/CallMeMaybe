@@ -1,59 +1,71 @@
-﻿
-using System;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using CallMeMaybe.Args;
+using CallMeMaybe.Domain.Contract.Requests;
+using CallMeMaybe.Domain.Contract.Result;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-
-using CallMeMaybe.Args;
 
 namespace CallMeMaybe.Builder
 {
     public static class ConnectionBuilder
     {
-        public static async Task<Connection> Create(AuthorizationManager authorizationManager)
+        public static async Task<Connection> Create(HttpAuthorizationResult authorization)
         {
-            string id = authorizationManager.AuthenticateResult.Id;
-            string userName = authorizationManager.AuthenticateResult.User;
-
+            Connection connection = new Connection();
             HubConnection hub = new HubConnectionBuilder().WithUrl(Routes.SignalR.Connection, options =>
             {
-                options.AccessTokenProvider = () => Task.FromResult(authorizationManager.AuthenticateResult.Token);
-                options.Headers.Add("Id", id);
-                options.Headers.Add("UserName", userName);
+                options.AccessTokenProvider = () => Task.FromResult(authorization.Token);
+                options.Headers.Add("Id", authorization.Id);
+                options.Headers.Add("UserName", authorization.User);
             }).AddMessagePackProtocol().Build();
 
-            Connection connection = new Connection()
-            {
-                HubConnection = hub
-            };
+            connection.Friends = await HttpRestClient.GetFriendsWithStatus(authorization.Id);
             
-            connection.Friends = await HttpRestClient.GetFriendsStatus(id);
-
-            hub.On("FriendStatusNotification", (string userName, bool state) =>
+            hub.On("NotificationFriendChangeStatus", async (string userName, bool state) =>
             {
                 try
                 {
-                    connection.Friends[userName] = state;
-                    var args = new UpdateFriendsStatusDelegateArgs()
+                    var isUserExist = connection.Friends.ContainsKey(userName);
+                    if (isUserExist)
                     {
-                        Status = state,
-                        UserName = userName,
-                    };
-
-                    connection.OnUpdateFriendsStatus(args);
-                }
+                        connection.Friends[userName] = state;
+                        var args = new ChangeStatusFriendDelegateArgs()
+                        {
+                            Status = state,
+                            UserName = userName,
+                        };
+                        connection.OnChangeStatusFriend(args);
+                    }
+                    else
+                    {
+                        await Log.WriteAsync($"Error:Nie znaleziono użytkownika:{userName} którego status miał zostać zmieniony");
+                    }
+                }   
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     throw;
                 }
-
             });
 
-            hub.On("BroadcastMessage", (string username,string message) =>
+            hub.On("IncomingCall", async (string userName,string connectionId) =>
+            {
+                Console.WriteLine("Połączenie przychodzące");
+                connection.OnIncomingCall(new ConnectionDelegateArgs(){User = userName});
+            });
+            
+            hub.On("CallAccepted", async (string userName) =>
+            {
+                Console.WriteLine("Połączenie zaakceptowane");
+            });
+            
+            hub.On("CallDeclined", async (string userName) =>
+            {
+                Console.WriteLine("Połączenie odrzucono");
+            });
+            
+            hub.On("ReceivingMessagesAsync", (string username,string message) =>
             {
                 var args = new MessageDelegateArgs()
                 {
@@ -64,37 +76,7 @@ namespace CallMeMaybe.Builder
                 connection.OnReceiveMessage(args);
             });
             
-            hub.On("IncomingCall", (string userName )=>
-            {
-                var args = new CommunicatorDelegateArgs()
-                {
-                    UserName = userName,
-                };
-                
-                connection.OnIncomingCall(args);
-            });
-
-            hub.On("CallAccepted", (string userName) =>
-            {
-                CommunicatorDelegateArgs args = new CommunicatorDelegateArgs()
-                {
-                    UserName = userName,
-                };
-                connection.OnCallAccepted(args);
-            });
-            
-            hub.On("CallDeclined", (string userName) =>
-            {
-                CommunicatorDelegateArgs args = new CommunicatorDelegateArgs()
-                {
-                    UserName = userName,
-                };
-                
-                connection.OnCallDeclined(args);
-            });
-
             await hub.StartAsync();
-
             connection.HubConnection = hub;
             return connection;
         }

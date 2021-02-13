@@ -11,8 +11,7 @@ namespace CallMeMaybe.Interface
 
         void OnSendMessage(MessageDelegateArgs args);
         void OnReceiveMessage(MessageDelegateArgs args);
+        public delegate void SendMessageDelegate(object sender, MessageDelegateArgs args);
+        public delegate void ReceiveMessageDelegate(object sender, MessageDelegateArgs args);
     }
-    
-    public delegate void SendMessageDelegate(object sender, MessageDelegateArgs args);
-    public delegate void ReceiveMessageDelegate(object sender, MessageDelegateArgs args);
 }

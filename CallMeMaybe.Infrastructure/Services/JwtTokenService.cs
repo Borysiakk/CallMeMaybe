@@ -6,13 +6,14 @@ using CallMeMaybe.Domain.Entities;
 using CallMeMaybe.Infrastructure.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace CallMeMaybe.Infrastructure.Services
 {
     public class JwtTokenService :ITokenService
     {
         private readonly SymmetricSecurityKey _key;
-     
+        
         public JwtTokenService(IConfiguration configuration )
         {
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
@@ -21,20 +22,18 @@ namespace CallMeMaybe.Infrastructure.Services
         public string Generate(ApplicationUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var creds = new SigningCredentials(_key,  SecurityAlgorithms.HmacSha256Signature);
+            var credits = new SigningCredentials(_key,  SecurityAlgorithms.HmacSha256Signature);
             
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new []
                 {
-                    new Claim("id",user.Id),
-                    new Claim(JwtRegisteredClaimNames.Sub,user.UserName),
                     new Claim(JwtRegisteredClaimNames.Email,user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddHours(1),
                 NotBefore = DateTime.UtcNow,
-                SigningCredentials = creds,
+                SigningCredentials = credits,
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
