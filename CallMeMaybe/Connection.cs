@@ -10,9 +10,10 @@ namespace CallMeMaybe
 {
     public class Connection :IConnection
     {
+        public List<Session> Sessions { get; set; }
         public HubConnection HubConnection { get; set; }
         public Dictionary<string, bool> Friends { get; set; }
-        
+
         public async Task Call(string userName)
         {
             await HubConnection.InvokeAsync("CallUser", userName);

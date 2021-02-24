@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Threading.Tasks;
 using CallMeMaybe.Domain.Entities;
 using CallMeMaybe.Infrastructure.Interface;
 using CallMeMaybe.SignalR.Interface;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.MixedReality.WebRTC;
 
 namespace CallMeMaybe.SignalR.Hubs
 {
@@ -75,10 +75,27 @@ namespace CallMeMaybe.SignalR.Hubs
 
         public async Task SendMessage(string userName, string message)
         {
-            Console.WriteLine("Wysyłanie wiadomosci");
             string connectionId =  _sessionService.GetConnectionIdByUserName(userName);
             string userNameCurrent = _sessionService.GetUserNameByConnectionId(Context.ConnectionId);
+            
             await Clients.Client(connectionId).ReceivingMessagesAsync(userNameCurrent,message);
+        }
+
+
+        public async Task SdpMessageSendConfigurationWebRtc(string userName,SdpMessage message)
+        {
+            string connectionId =  _sessionService.GetConnectionIdByUserName(userName);
+            string userNameCurrent = _sessionService.GetUserNameByConnectionId(Context.ConnectionId);
+            
+            await Clients.Client(connectionId).SdpMessageReceivedConfigurationWebRtc(userNameCurrent,message);
+        }
+
+        public async Task IceCandidateSendConfigurationWebRtc(string userName, IceCandidate candidate)
+        {
+            string connectionId =  _sessionService.GetConnectionIdByUserName(userName);
+            string userNameCurrent = _sessionService.GetUserNameByConnectionId(Context.ConnectionId);
+            
+            await Clients.Client(connectionId).IceCandidateReceivedConfigurationWebRtc(userNameCurrent, candidate);
         }
     }
 }

@@ -5,6 +5,7 @@ using CallMeMaybe.Domain.Contract.Requests;
 using CallMeMaybe.Domain.Contract.Result;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.MixedReality.WebRTC;
 
 namespace CallMeMaybe.Builder
 {
@@ -74,6 +75,16 @@ namespace CallMeMaybe.Builder
                 };
             
                 connection.OnReceiveMessage(args);
+            });
+
+            hub.On("SdpMessageReceivedConfigurationWebRtc", (string userName,SdpMessage sdpMessage) =>
+            {
+                
+            });
+
+            hub.On("IceCandidateReceivedConfigurationWebRtc", (string userName, IceCandidate iceCandidate) =>
+            {
+                
             });
             
             await hub.StartAsync();
