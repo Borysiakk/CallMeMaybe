@@ -62,6 +62,8 @@ namespace CallMeMaybe.Builder
             hub.On("CallAccepted", async (string userName) =>
             {
                 Console.WriteLine("Połączenie zaakceptowane");
+                connection.Session.UserNameFriend = userName;
+                connection.Session.CreateOfferConnection();
             });
             
             hub.On("CallDeclined", async (string userName) =>
@@ -80,14 +82,17 @@ namespace CallMeMaybe.Builder
                 connection.OnReceiveMessage(args);
             });
 
-            hub.On("SdpMessageReceivedConfigurationWebRtc", (string userName,SdpMessage sdpMessage) =>
+            hub.On("SdpMessageReceivedConfigurationWebRtc",async (string userName,SdpMessage sdpMessage) =>
             {
+                await connection.Session.SetRemoteDescriptionAsync(sdpMessage);
+                connection.Session.CreateAnswerConnection();
                 Console.WriteLine("Odebranie konfiguracji SDP");
             });
 
             hub.On("IceCandidateReceivedConfigurationWebRtc", (string userName, IceCandidate iceCandidate) =>
             {
-                
+                connection.Session.AddIceCandidate(iceCandidate);
+                Console.WriteLine("Odebranie konfiguracji ICE");
             });
             
             await hub.StartAsync();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using CallMeMaybe.Args;
 using CallMeMaybe.Builder;
 using CallMeMaybe.Interface;
@@ -12,22 +11,20 @@ namespace CallMeMaybe
 {
     public class Connection :IConnection
     {
-        private Session _session;
-        
         public string User { get;}
+        public Session Session { get; private set; }
         public HubConnection HubConnection { get; set; }
         public Dictionary<string, bool> Friends { get; set; }
 
         public Connection(string user)
         {
             User = user;
-            _session = SessionBuilder.Create(this);
-            _session.Initialization().Wait();
+            Session = SessionBuilder.Create(this);
+            Session.Initialization().Wait();
         }
         
         public async Task Call(string userName)
         {
-            _session.CreateOfferConnection();
             await HubConnection.InvokeAsync("CallUser", userName);
         }
 
@@ -35,6 +32,7 @@ namespace CallMeMaybe
         {
             Console.WriteLine("Połączenie zakceptowane");
             await HubConnection.InvokeAsync("AnswerCall", userName, true);
+            Session.UserNameFriend = userName;
         }
 
         public async Task CallDeclinedIncoming(string userName)
@@ -60,7 +58,7 @@ namespace CallMeMaybe
 
         public void Close()
         {
-            _session.Close();
+            Session.Close();
         }
 
         public async Task Send(string userName, string message)

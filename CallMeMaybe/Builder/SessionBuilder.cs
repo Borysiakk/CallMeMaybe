@@ -12,10 +12,15 @@ namespace CallMeMaybe.Builder
             {
                 LocalSdpReadyToSend = async message =>
                 {
-                    await connection.HubConnection.InvokeAsync("SdpMessageSendConfigurationWebRtc", connection.User, message);
+                    await connection.HubConnection.InvokeAsync("SdpMessageSendConfigurationWebRtc",connection.Session.UserNameFriend, message);
                     Console.WriteLine("Wysłanie konfiguracji SDP");
                 },
                 
+                IceCandidateReadyToSend = async candidate =>
+                {
+                    await connection.HubConnection.InvokeAsync("IceCandidateSendConfigurationWebRtc",connection.Session.UserNameFriend, candidate);
+                    Console.WriteLine("Wysłanie konfiguracji ICE");
+                },
             };
 
             return new Session(configure);

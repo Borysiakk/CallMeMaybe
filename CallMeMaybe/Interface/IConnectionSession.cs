@@ -8,6 +8,7 @@ namespace CallMeMaybe.Interface
         public void Close();
         public Task Initialization();
         public void CreateOfferConnection();
+        public void CreateAnswerConnection();
         public void AddIceCandidate(IceCandidate candidate);
         public Task SetRemoteDescriptionAsync(SdpMessage message);
     }
