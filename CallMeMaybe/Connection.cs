@@ -3,19 +3,31 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using CallMeMaybe.Args;
+using CallMeMaybe.Builder;
 using CallMeMaybe.Interface;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.MixedReality.WebRTC;
 
 namespace CallMeMaybe
 {
     public class Connection :IConnection
     {
-        public List<Session> Sessions { get; set; }
+        private Session _session;
+        
+        public string User { get;}
         public HubConnection HubConnection { get; set; }
         public Dictionary<string, bool> Friends { get; set; }
 
+        public Connection(string user)
+        {
+            User = user;
+            _session = SessionBuilder.Create(this);
+            _session.Initialization().Wait();
+        }
+        
         public async Task Call(string userName)
         {
+            _session.CreateOfferConnection();
             await HubConnection.InvokeAsync("CallUser", userName);
         }
 
@@ -45,7 +57,12 @@ namespace CallMeMaybe
         {
             IncomingCall?.Invoke(this,args);
         }
-        
+
+        public void Close()
+        {
+            _session.Close();
+        }
+
         public async Task Send(string userName, string message)
         {
             await HubConnection.InvokeAsync("SendMessage",userName, message);

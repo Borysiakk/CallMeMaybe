@@ -13,7 +13,6 @@ namespace CallMeMaybe.Builder
     {
         public static async Task<Connection> Create(HttpAuthorizationResult authorization)
         {
-            Connection connection = new Connection();
             HubConnection hub = new HubConnectionBuilder().WithUrl(Routes.SignalR.Connection, options =>
             {
                 options.AccessTokenProvider = () => Task.FromResult(authorization.Token);
@@ -21,8 +20,12 @@ namespace CallMeMaybe.Builder
                 options.Headers.Add("UserName", authorization.User);
             }).AddMessagePackProtocol().Build();
 
-            connection.Friends = await HttpRestClient.GetFriendsWithStatus(authorization.Id);
-            
+            Connection connection = new Connection(authorization.User)
+            {
+                Friends = await HttpRestClient.GetFriendsWithStatus(authorization.Id)
+            };
+
+
             hub.On("NotificationFriendChangeStatus", async (string userName, bool state) =>
             {
                 try
@@ -79,7 +82,7 @@ namespace CallMeMaybe.Builder
 
             hub.On("SdpMessageReceivedConfigurationWebRtc", (string userName,SdpMessage sdpMessage) =>
             {
-                
+                Console.WriteLine("Odebranie konfiguracji SDP");
             });
 
             hub.On("IceCandidateReceivedConfigurationWebRtc", (string userName, IceCandidate iceCandidate) =>

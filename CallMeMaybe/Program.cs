@@ -47,6 +47,7 @@ namespace CallMeMaybe
             
             
             Console.ReadKey();
+            connection.Close();
         }
     }
 }
