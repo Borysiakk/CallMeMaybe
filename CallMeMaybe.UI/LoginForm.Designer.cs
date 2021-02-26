@@ -87,12 +87,13 @@ namespace CallMeMaybe.UI
             this.PasswordcomboBox.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.PasswordcomboBox.FormattingEnabled = true;
             this.PasswordcomboBox.Items.AddRange(new object[] {
-            "12345"});
+            "string"});
             this.PasswordcomboBox.Location = new System.Drawing.Point(79, 54);
             this.PasswordcomboBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.PasswordcomboBox.Name = "PasswordcomboBox";
             this.PasswordcomboBox.Size = new System.Drawing.Size(302, 36);
             this.PasswordcomboBox.TabIndex = 3;
+            this.PasswordcomboBox.SelectedIndexChanged += new System.EventHandler(this.PasswordcomboBox_SelectedIndexChanged);
             // 
             // LoginForm
             // 

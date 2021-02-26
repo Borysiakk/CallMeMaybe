@@ -27,7 +27,7 @@ namespace CallMeMaybe
 
                 var authorizationResult = await HttpRestClient.LoginAsync(loginModelView);
                 Connection connection = await ConnectionBuilder.Create(authorizationResult);
-            
+                await connection.Session.Initialization(connection.User);
                 connection.IncomingCall += async (sender, delegateArgs) =>
                 {
                     Console.WriteLine("Połączenie przychodzące od {0}",delegateArgs.User);
@@ -42,9 +42,9 @@ namespace CallMeMaybe
                     Console.WriteLine(friend.Key + ": " + friend.Value);
                 }
 
-                if (args[0] == "szymaborys@gmail.com")
+                if (args[0] == "userxxx@gmai.com")
                 {
-                    await connection.Call("borys59@onet.eu");
+                    await connection.Call("user1xxx@gmai.com");
                 }
             
             

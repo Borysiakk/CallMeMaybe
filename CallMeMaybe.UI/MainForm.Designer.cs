@@ -33,6 +33,8 @@ namespace CallMeMaybe.UI
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonCall = new System.Windows.Forms.Button();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonCallDeclined = new System.Windows.Forms.Button();
             this.buttonCallAccepted = new System.Windows.Forms.Button();
             this.listViewFriends = new System.Windows.Forms.ListView();
@@ -40,8 +42,6 @@ namespace CallMeMaybe.UI
             this.sendMessageButton = new System.Windows.Forms.Button();
             this.messageText = new System.Windows.Forms.TextBox();
             this.TabControlChat = new System.Windows.Forms.TabControl();
-            this.buttonCall = new System.Windows.Forms.Button();
-            this.buttonCancel = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,6 +61,26 @@ namespace CallMeMaybe.UI
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(881, 450);
             this.panel1.TabIndex = 0;
+            // 
+            // buttonCall
+            // 
+            this.buttonCall.Image = ((System.Drawing.Image)(resources.GetObject("buttonCall.Image")));
+            this.buttonCall.Location = new System.Drawing.Point(660, 14);
+            this.buttonCall.Name = "buttonCall";
+            this.buttonCall.Size = new System.Drawing.Size(214, 97);
+            this.buttonCall.TabIndex = 10;
+            this.buttonCall.UseVisualStyleBackColor = true;
+            this.buttonCall.Click += new System.EventHandler(this.buttonCall_Click);
+            // 
+            // buttonCancel
+            // 
+            this.buttonCancel.Image = ((System.Drawing.Image)(resources.GetObject("buttonCancel.Image")));
+            this.buttonCancel.Location = new System.Drawing.Point(660, 12);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(214, 97);
+            this.buttonCancel.TabIndex = 11;
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // buttonCallDeclined
             // 
@@ -133,26 +153,6 @@ namespace CallMeMaybe.UI
             this.TabControlChat.SelectedIndexChanged += new System.EventHandler(this.TabControlChat_SelectedIndexChanged);
             this.TabControlChat.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TabControlChat_MouseClick);
             // 
-            // buttonCall
-            // 
-            this.buttonCall.Image = ((System.Drawing.Image)(resources.GetObject("buttonCall.Image")));
-            this.buttonCall.Location = new System.Drawing.Point(660, 14);
-            this.buttonCall.Name = "buttonCall";
-            this.buttonCall.Size = new System.Drawing.Size(214, 97);
-            this.buttonCall.TabIndex = 10;
-            this.buttonCall.UseVisualStyleBackColor = true;
-            this.buttonCall.Click += new System.EventHandler(this.buttonCall_Click);
-            // 
-            // buttonCancel
-            // 
-            this.buttonCancel.Image = ((System.Drawing.Image)(resources.GetObject("buttonCancel.Image")));
-            this.buttonCancel.Location = new System.Drawing.Point(660, 14);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(214, 97);
-            this.buttonCancel.TabIndex = 11;
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -177,9 +177,9 @@ namespace CallMeMaybe.UI
         private System.Windows.Forms.TextBox messageText;
         private System.Windows.Forms.ListView listViewFriends;
         private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.Button buttonCallAccepted;
-        private System.Windows.Forms.Button buttonCallDeclined;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonCall;
+        private System.Windows.Forms.Button buttonCallDeclined;
+        private System.Windows.Forms.Button buttonCallAccepted;
     }
 }

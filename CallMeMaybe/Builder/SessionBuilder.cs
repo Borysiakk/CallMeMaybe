@@ -21,8 +21,9 @@ namespace CallMeMaybe.Builder
                     await connection.HubConnection.InvokeAsync("IceCandidateSendConfigurationWebRtc",connection.Session.UserNameFriend, candidate);
                     Console.WriteLine("Wysłanie konfiguracji ICE");
                 },
+                
+                
             };
-
             return new Session(configure);
         }
     }

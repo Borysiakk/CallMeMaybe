@@ -32,7 +32,7 @@ namespace CallMeMaybe
             Connection.Close();
         }
 
-        public async Task Initialization()
+        public async Task Initialization(string user)
         {
             try
             {
@@ -53,6 +53,7 @@ namespace CallMeMaybe
             }
             catch (Exception e)
             {
+                await Log.WriteAsync(e.Message);
                 Console.WriteLine(e);
                 throw;
             }

@@ -20,7 +20,6 @@ namespace CallMeMaybe
         {
             User = user;
             Session = SessionBuilder.Create(this);
-            Session.Initialization().Wait();
         }
         
         public async Task Call(string userName)
@@ -59,6 +58,7 @@ namespace CallMeMaybe
         public void Close()
         {
             Session.Close();
+            HubConnection.StopAsync().Wait();
         }
 
         public async Task Send(string userName, string message)
@@ -83,10 +83,7 @@ namespace CallMeMaybe
             ReceiveMessage?.Invoke(this,args);
         }
 
-        ~Connection()
-        {
-            HubConnection.StopAsync().Wait();
-        }
+        
         
         public event IConnection.ChangeStatusFriendDelegate ChangeStatusFriend;
         public event IConnectMultimediaCommunication.CallUserDelegate CallUser;

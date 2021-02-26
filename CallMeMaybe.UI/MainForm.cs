@@ -11,8 +11,6 @@ namespace CallMeMaybe.UI
 {
     public partial class MainForm : Form
     {
-
-
         private string userName;
         private Connection _connection;
         
@@ -50,7 +48,7 @@ namespace CallMeMaybe.UI
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
                 _connection = await ConnectionBuilder.Create(loginForm.AuthorizationResult);
-                
+                await _connection.Session.Initialization(loginForm.AuthorizationResult.User);
                 foreach(var friend in _connection.Friends)
                 {
                     if (friend.Value == true)
@@ -184,23 +182,33 @@ namespace CallMeMaybe.UI
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-
+            //_connection.Session.
         }
 
-        private void buttonCall_Click(object sender, EventArgs e)
+        private async void buttonCall_Click(object sender, EventArgs e)
         {
             var itemFriendSelect = listViewFriends.SelectedItems[0];
-            _connection.Call(itemFriendSelect.Text);
+            await _connection.Call(itemFriendSelect.Text);
+            
+            buttonCall.Visible = false;
+            buttonCancel.Visible = true;
+
+            buttonCallDeclined.Visible = false;
+            buttonCallAccepted.Visible = false;
         }
 
         private async void buttonCallAccepted_Click(object sender, EventArgs e)
         {
-            //await _connection.AnswerCall(userName, true);
+            await _connection.CallAcceptedIncoming(userName);
+
+            buttonCancel.Visible = true;
+            buttonCallDeclined.Visible = false;
+            buttonCallAccepted.Visible = false;
         }
 
         private async void buttonCallDeclined_Click(object sender, EventArgs e)
         {
-            //await _connection.AnswerCall(userName, false);
+            await _connection.CallDeclinedIncoming(userName);
         }
 
         private void TabControlChat_DrawItem(object sender, DrawItemEventArgs e)

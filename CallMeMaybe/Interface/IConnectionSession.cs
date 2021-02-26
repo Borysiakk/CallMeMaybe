@@ -6,7 +6,7 @@ namespace CallMeMaybe.Interface
     public interface IConnectionSession
     {
         public void Close();
-        public Task Initialization();
+        public Task Initialization(string user);
         public void CreateOfferConnection();
         public void CreateAnswerConnection();
         public void AddIceCandidate(IceCandidate candidate);

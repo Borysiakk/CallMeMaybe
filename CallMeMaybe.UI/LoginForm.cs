@@ -36,5 +36,10 @@ namespace CallMeMaybe.UI
                 MessageBox.Show("Błędny login lub hasło");
             }
         }
+
+        private void PasswordcomboBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+
+        }
     }
 }
