@@ -1,2 +1,2 @@
-Projekt umożliwiający oddanie głosu
+Projekt umożliwiający oddanie głosu <br>
 https://github.com/Borysiakk/ElectronicVoting-Web
